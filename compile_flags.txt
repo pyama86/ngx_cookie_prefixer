@@ -1,0 +1,3 @@
+-I./nginx/src/core/
+-I./nginx/objs/
+-I./nginx/src/os/unix/
