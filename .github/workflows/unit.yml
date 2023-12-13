@@ -7,7 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Cache multiple paths
     - name: Cache assets
       uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3
       with:
