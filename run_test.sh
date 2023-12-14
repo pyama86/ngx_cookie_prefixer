@@ -6,7 +6,7 @@ oneTimeSetUp() {
   cp `pwd`/test/test.conf ./nginx/conf/nginx.conf
   pkill nginx
   nginx/objs/nginx -p `pwd`/nginx &
-  sleep 3
+  sleep 1
 }
 
 oneTimeTearDown() {
