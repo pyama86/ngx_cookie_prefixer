@@ -10,7 +10,7 @@ oneTimeSetUp() {
 }
 
 oneTimeTearDown() {
-  docker rm -f nginx-httpbin | t
+  docker rm -f nginx-httpbin | true
   pkill nginx | true
 }
 
