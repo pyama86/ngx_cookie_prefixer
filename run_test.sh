@@ -9,22 +9,17 @@ oneTimeSetUp() {
   while ! nc -z localhost 1234; do
     sleep 0.1
   done
+
   while ! nc -z localhost 10080; do
     sleep 0.1
   done
+
+  docker logs -f nginx-httpbin &
 }
 
 oneTimeTearDown() {
-  docker logs nginx-httpbin
   docker rm -f nginx-httpbin | true
   pkill nginx | true
-}
-
-
-test_large_cookie_value_with_response() {
-  local large_value=$(printf 'a%.0s' {1..4000}) # 4000文字の 'a' で構成される文字列
-  local result=$(curl -s -i -L "http://localhost:1234/cookies/set?large_cookie=$large_value")
-  assertContains "$result" "$result" "Set-Cookie: example_prefix_large_cookie=$large_value; Path=/"
 }
 
 test_delete_prefix() {
@@ -66,6 +61,12 @@ test_many_cookies_with_response() {
   for i in $(seq 1 100); do
     assertContains "$result" "$result" "Set-Cookie: example_prefix_name${i}=value${i}; Path=/"
   done
+}
+
+test_large_cookie_value_with_response() {
+  local large_value=$(printf 'a%.0s' {1..4000}) # 4000文字の 'a' で構成される文字列
+  local result=$(curl -s -i -L "http://localhost:1234/cookies/set?large_cookie=$large_value")
+  assertContains "$result" "$result" "Set-Cookie: example_prefix_large_cookie=$large_value; Path=/"
 }
 
 . tmp/shunit2/shunit2
