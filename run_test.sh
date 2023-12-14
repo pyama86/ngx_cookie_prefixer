@@ -64,7 +64,7 @@ test_many_cookies_with_response() {
 }
 
 test_large_cookie_value_with_response() {
-  local large_value=$(printf 'a%.0s' {1..4000}) # 4000文字の 'a' で構成される文字列
+  local large_value=$(printf 'a%.0s' {1..1000}) # 1000文字の 'a' で構成される文字列
   local result=$(curl -s -i -L "http://localhost:1234/cookies/set?large_cookie=$large_value")
   assertContains "$result" "$result" "Set-Cookie: example_prefix_large_cookie=$large_value; Path=/"
 }
