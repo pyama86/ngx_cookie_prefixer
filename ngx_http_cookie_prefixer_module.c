@@ -110,29 +110,34 @@ static ngx_int_t ngx_http_cookie_prefixer_rewrite_handler(ngx_http_request_t *r)
     ngx_log_error(NGX_LOG_DEBUG, r->connection->log, 0, "%s:%d: cookie key: %s ", __func__, __LINE__,
                   header[i].key.data);
     if (ngx_strncasecmp(header[i].key.data, (u_char *)"Cookie", 6) == 0) {
+      ngx_log_error(NGX_LOG_DEBUG, r->connection->log, 0, "%s:%d: cookie value: %s ", __func__, __LINE__,
+                    header[i].value.data);
       ngx_str_t cookie_value = header[i].value;
       u_char *start          = cookie_value.data;
       u_char *end            = cookie_value.data + cookie_value.len;
-      u_char *pos, *name_pos;
+      u_char *pos;
 
       while (start < end) {
-        pos = ngx_strnstr(start, "name=", end - start);
+        pos = ngx_strnstr(start, "=", end - start);
         if (pos == NULL) {
           break;
         }
 
-        name_pos = pos + sizeof("name=") - 1;
-        pos      = ngx_strnstr(name_pos, (char *)prefix->data, end - name_pos);
-
-        if (pos != NULL && pos < end) {
+        u_char *prefix_start = ngx_strnstr(start, (char *)prefix->data, pos - start);
+        if (prefix_start != NULL) {
           ngx_log_error(NGX_LOG_DEBUG, r->connection->log, 0, "%s:%d: before cookie value: %s ", __func__, __LINE__,
                         header[i].value.data);
-          ngx_memmove(pos, pos + prefix->len, end - (pos + prefix->len));
+
+          ngx_log_error(NGX_LOG_DEBUG, r->connection->log, 0, "%s:%d: move bytes: %d ", __func__, __LINE__,
+                        end - prefix_start);
+          // プレフィックスの削除
+          ngx_memmove(start, prefix_start + prefix->len, end - prefix_start - prefix->len + 1);
+
+          // ヘッダーの値の長さを更新
           header[i].value.len -= prefix->len;
+
           ngx_log_error(NGX_LOG_DEBUG, r->connection->log, 0, "%s:%d: after cookie value: %s ", __func__, __LINE__,
                         header[i].value.data);
-        } else if (pos == NULL) {
-          pos = name_pos;
         }
 
         start = ngx_strlchr(pos, end, ';');

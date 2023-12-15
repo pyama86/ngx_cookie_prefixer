@@ -25,9 +25,9 @@ oneTimeTearDown() {
 }
 
 test_delete_prefix() {
-  local result=$(curl -s -b'name=example_prefix_a; value=1' -b'name=not_match_prefix_b; value=2;' http://localhost:1234/get -L -i)
-  assertContains "$result" "$result" 'name=a; value=1'
-  assertContains "$result" "$result" 'name=not_match_prefix_b; value=2'
+  local result=$(curl -s -b'example_prefix_a=1;' -b'not_match_prefix_b=2;' http://localhost:1234/get -L -i)
+  assertContains "$result" "$result" 'a=1'
+  assertContains "$result" "$result" 'not_match_prefix_b=2'
 }
 
 test_append_prefix() {
@@ -37,19 +37,19 @@ test_append_prefix() {
 
 test_delete_long_cookie_with_request() {
   local long_value=$(printf 'a%.0s' {1..1000}) # 1000文字の 'a' で構成される文字列
-  local result=$(curl -s -b"name=example_prefix_$long_value; value=1" http://localhost:1234/get -L -i)
-  assertContains "$result" "$result" "name=$long_value; value=1"
+  local result=$(curl -s -b"example_prefix_$long_value=1" http://localhost:1234/get -L -i)
+  assertContains "$result" "$result" "$long_value=1"
 }
 
 test_delete_many_cookies_with_request() {
   local cookies=()
   for i in {1..100}; do
-    cookies+=("-b" "name=example_prefix_name${i}; value=${i}")
+    cookies+=("-b" "example_prefix_name${i}=${i}")
   done
 
   local result=$(curl -s "${cookies[@]}" http://localhost:1234/get -L -i)
   for i in {1..100}; do
-    assertContains "$result" "$result" "name=name${i}; value=${i}"
+    assertContains "$result" "$result" "${i}=${i}"
   done
 }
 
