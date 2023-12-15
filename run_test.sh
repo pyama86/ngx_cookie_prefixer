@@ -15,6 +15,8 @@ oneTimeSetUp() {
   done
 
   docker logs -f nginx-httpbin &
+  echo "Waiting for nginx to start..."
+  sleep 3
 }
 
 oneTimeTearDown() {
