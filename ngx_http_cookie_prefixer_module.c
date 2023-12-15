@@ -8,6 +8,7 @@ typedef struct {
 
 static char *ngx_http_cookie_prefixer_set_prefix(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 static ngx_int_t ngx_http_cookie_prefixer_rewrite_handler(ngx_http_request_t *r);
+static ngx_int_t ngx_http_cookie_prefixer_header_handler(ngx_http_request_t *r);
 static void *ngx_http_cookie_prefixer_create_loc_conf(ngx_conf_t *cf);
 static char *ngx_http_cookie_prefixer_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child);
 static ngx_int_t ngx_http_cookie_prefixer_init(ngx_conf_t *cf);
