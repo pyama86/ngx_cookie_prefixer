@@ -13,7 +13,7 @@ static void *ngx_http_cookie_prefixer_create_loc_conf(ngx_conf_t *cf);
 static char *ngx_http_cookie_prefixer_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child);
 static ngx_int_t ngx_http_cookie_prefixer_init(ngx_conf_t *cf);
 
-static ngx_http_output_header_filter_pt ngx_http_next_header_filter;
+ngx_http_output_header_filter_pt ngx_http_next_header_filter;
 static ngx_http_module_t ngx_http_cookie_prefixer_module_ctx = {
     NULL,                                     /* preconfiguration */
     ngx_http_cookie_prefixer_init,            /* postconfiguration */
