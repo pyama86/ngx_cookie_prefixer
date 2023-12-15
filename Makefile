@@ -1,7 +1,6 @@
 NGINX_VERSION=1.25.3
 NGINX_PATH = ./nginx
 MODULE_SRC = $(CURDIR)/ngx_http_cookie_prefixer.c
-MODULE_NAME = ngx_http_cookie_prefixer_module.so
 
 nginx:
 	curl -s -L -O http://nginx.org/download/nginx-$(NGINX_VERSION).tar.gz
@@ -11,12 +10,11 @@ nginx:
 
 
 # Nginxのビルド設定を指定するオプション
-CONFIGURE_ARGS = --add-dynamic-module=$(CURDIR)
+CONFIGURE_ARGS = --add-module=$(CURDIR) --with-debug
 
 # Nginxとモジュールのビルド
 build: $(NGINX_PATH)/Makefile
 	$(MAKE) -C $(NGINX_PATH)
-	cp $(NGINX_PATH)/objs/$(MODULE_NAME) .
 
 # Nginxのconfigureスクリプトを実行
 $(NGINX_PATH)/Makefile: nginx
@@ -25,7 +23,6 @@ $(NGINX_PATH)/Makefile: nginx
 # クリーンアップ
 clean:
 	$(MAKE) -C $(NGINX_PATH) clean
-	rm -f $(MODULE_NAME)
 
 
 DIST_DIR:=./tmp/dist
@@ -38,5 +35,11 @@ testdev:
 
 test: testdev build
 	mkdir -p nginx/logs
-	cp ./ngx_http_cookie_prefixer_module.so ./nginx/
 	bash run_test.sh
+
+run:
+	docker rm -f nginx-httpbin | true
+	docker run -d -p 127.0.0.1:10080:80  --name nginx-httpbin kennethreitz/httpbin
+	cp `pwd`/test/test.conf ./nginx/conf/nginx.conf
+	pkill nginx | true
+	nginx/objs/nginx -p `pwd`/nginx &
