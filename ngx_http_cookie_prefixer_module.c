@@ -130,6 +130,9 @@ static ngx_int_t ngx_http_cookie_prefixer_rewrite_handler(ngx_http_request_t *r)
 
           ngx_log_error(NGX_LOG_DEBUG, r->connection->log, 0, "%s:%d: move bytes: %d ", __func__, __LINE__,
                         end - prefix_start);
+          if (start[0] == ' ') {
+            prefix_start++;
+          }
           // プレフィックスの削除
           ngx_memmove(start, prefix_start + prefix->len, end - prefix_start - prefix->len + 1);
 
