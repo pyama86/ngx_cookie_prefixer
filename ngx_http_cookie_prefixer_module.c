@@ -134,7 +134,7 @@ static ngx_int_t ngx_http_cookie_prefixer_rewrite_handler(ngx_http_request_t *r)
             start++;
           }
           // プレフィックスの削除
-          ngx_memmove(start, prefix_start + prefix->len, end - prefix_start - prefix->len + 1);
+          ngx_memmove(start, prefix_start + prefix->len, ngx_strlen(prefix_start) - prefix->len);
 
           // ヘッダーの値の長さを更新
           header[i].value.len -= prefix->len;
