@@ -133,7 +133,8 @@ static ngx_int_t ngx_http_cookie_prefixer_rewrite_handler(ngx_http_request_t *r)
                         end - prefix_start);
 
           int shift = 0;
-          for (int j = 0; j < diff; j++) {
+          int j     = 0;
+          for (j = 0; j < diff; j++) {
             if (start[j] == ' ' || start[j] == ';') {
               shift++;
             }
