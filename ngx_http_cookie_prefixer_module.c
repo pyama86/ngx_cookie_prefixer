@@ -125,14 +125,21 @@ static ngx_int_t ngx_http_cookie_prefixer_rewrite_handler(ngx_http_request_t *r)
 
         u_char *prefix_start = ngx_strnstr(start, (char *)prefix->data, pos - start);
         if (prefix_start != NULL) {
-          ngx_log_error(NGX_LOG_DEBUG, r->connection->log, 0, "%s:%d: before cookie value: %s ", __func__, __LINE__,
-                        header[i].value.data);
+          int diff = prefix_start - start;
+          ngx_log_error(NGX_LOG_DEBUG, r->connection->log, 0, "%s:%d: before cookie value: %s diff:%d ", __func__,
+                        __LINE__, header[i].value.data, diff);
 
           ngx_log_error(NGX_LOG_DEBUG, r->connection->log, 0, "%s:%d: move bytes: %d ", __func__, __LINE__,
                         end - prefix_start);
-          if (start[0] == ' ') {
-            start++;
+
+          int shift = 0;
+          for (int j = 0; j < diff; j++) {
+            if (start[j] == ' ' || start[j] == ';') {
+              shift++;
+            }
           }
+          start += shift;
+
           // プレフィックスの削除
           ngx_memmove(start, prefix_start + prefix->len, ngx_strlen(prefix_start) - prefix->len);
 
