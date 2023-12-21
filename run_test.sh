@@ -28,6 +28,10 @@ test_delete_prefix() {
   local result=$(curl -s -b'example_prefix_a=1;' -b'not_match_prefix_b=2;' http://localhost:1234/get -L -i)
   assertContains "$result" "$result" 'a=1'
   assertContains "$result" "$result" 'not_match_prefix_b=2'
+  local result=$(curl -s -b'example_prefix_a=1;' -b'example_prefix_b=;' -b'example_prefix_c=;' http://localhost:1234/get -L -i)
+  assertContains "$result" "$result" 'a=1'
+  assertContains "$result" "$result" 'b='
+  assertContains "$result" "$result" 'c='
 }
 
 test_append_prefix() {
