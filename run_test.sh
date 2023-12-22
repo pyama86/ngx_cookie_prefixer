@@ -167,7 +167,7 @@ test_many_cookies_with_fuzzing() {
   done
 }
 
-test_many_cookies_with_fuzzing_with_shortprefix() {
+test_many_cookies_with_fuzzing_and_shortprefix() {
   local query_params=""
   local values=()
 
