@@ -89,5 +89,34 @@ test_large_cookie_value_with_response() {
   assertContains "$result" "$result" "Set-Cookie: example_prefix_large_cookie=$large_value; Path=/"
 }
 
+test_delete_many_cookies_with_fuzzing() {
+  local cookies=()
+  local expected=()
+
+  for i in {1..100}; do
+    # ランダムな文字数を生成 (例: 1〜15の範囲)
+    local len=$((RANDOM % 14 + 1))
+
+    # ロケールを C に設定して、ランダムな文字列を生成
+    export LC_ALL=C
+    local rand_str=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $len | head -n 1)
+
+    # プレフィックスをランダムに選択
+    local prefix=""
+    if (( RANDOM % 2 )); then
+      prefix="example_prefix_"
+    fi
+
+    # クッキーと期待値を配列に追加
+    cookies+=("-b" "${prefix}name${i}=${rand_str}")
+    expected+=("name${i}=${rand_str};")
+  done
+
+  # cURL コマンドの実行
+  local result=$(curl -s "${cookies[@]}" http://localhost:1234/get -L -i)
+
+  # 結果のアサーション
+  assertContains "$result" "$result" "${expected/%?/}"
+}
 
 . tmp/shunit2/shunit2
