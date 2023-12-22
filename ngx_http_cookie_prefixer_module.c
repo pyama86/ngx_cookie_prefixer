@@ -150,6 +150,7 @@ static ngx_int_t ngx_http_cookie_prefixer_rewrite_handler(ngx_http_request_t *r)
           ngx_log_error(NGX_LOG_DEBUG, r->connection->log, 0, "%s:%d: after cookie value: %s ", __func__, __LINE__,
                         header[i].value.data);
           pos = start;
+          end -= prefix->len;
         }
 
         start = ngx_strlchr(pos, end, ';');
